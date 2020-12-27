@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import { Route, Switch } from "react-router-dom";
+import Palette from "./Palette";
+import PaletteList from "./PaletteList"
+import seedColors from "./seedColors"
+import SingleColorPalette from "./SingleColorPalette";
+import { generatePalette } from "./colorHelpers";
+class App extends Component {
+  findPalette(id) {
+    return seedColors.find(function (palette) {
+      return palette.id === id;
+    });
+  }
+  render() {
+    return (
+      <Switch>
+        <Route exact path="/" render={(routeProps) => <PaletteList palettes={seedColors} {...routeProps} />} />
+        <Route exact path="/palette/:id" render={routeProps =>
+          <Palette
+            palette={generatePalette(this.findPalette(routeProps.match.params.id))} />} />
+        <Route path="/palette/:paletteId/:colorId" render={routeProps =>
+          <SingleColorPalette
+            colorId={routeProps.match.params.colorId}
+            palette={generatePalette(this.findPalette(routeProps.match.params.paletteId))} />} />
+      </Switch>
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+      // <div>
+      //   <Palette palette={generatePalette(seedColors[4])} />
+      // </div>
+    )
+  }
 }
 
-export default App;
+export default App
